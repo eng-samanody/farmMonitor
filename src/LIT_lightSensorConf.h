@@ -1,0 +1,6 @@
+#ifdef  LIGHT_SENSOR_CONF_H__
+#define LIGHT_SENSOR_CONF_H__
+
+#define LIGHT_SENSOR_TSK_PERIOD 1200
+
+#endif /* LIGHT_SENSOR_CONF_H__ */
