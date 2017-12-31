@@ -4,10 +4,15 @@
 #include "APP_farmMonitorAppConf.h"
 #include "TYPE_stdTypes.h"
 
-uint32 u32TempBadLevelTimeCount;
-uint32 u32HumdBadLevelTimeCount;
-uint32 u32DustBadLevelTimeCount;
-uint32 u32LightBadLevelTimeCount;
+typedef enum{
+    LEVEL_NOK,
+    LEVEL_OK,
+} enutLevelState;
+
+uint8 u8TempLevelState;
+uint8 u8HumLevelState;
+uint8 u8LightLevelState;
+uint8 u8DustLevelState;
 
 
 extern float humidityValue;

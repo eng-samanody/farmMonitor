@@ -2,6 +2,7 @@
 #define BUZZER_MNG_H_
 
 #include "BUZ_buzzerConf.h"
+#include "TYPE_stdTypes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,6 +17,10 @@ extern "C" {
 #define BUZZER_TSK_PERIOD (uint16_t)500
 #define BUZ_TSK_STACK_SIZE (uint8_t)128
 
+typedef enum{
+    E_OK,
+    E_NOK,
+}enutBuzErrcode;
 
 extern void BUZ_buzzerToneTaskCallback(void *pvParameters);
 extern void BUZ_vidBuzzerOn(void);

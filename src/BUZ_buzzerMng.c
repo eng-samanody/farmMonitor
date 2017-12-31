@@ -14,15 +14,18 @@ typedef enum {
 	BUZZER_ON_FAST,
 }tenuBuzzerSpeed;
 
-static uint8_t u8BuzzerState;
-static uint8_t u8BuzzerSpeed;
-static uint32_t u32BuzzingPeriod;
+static uint8  u8BuzzerState;
+static uint8  u8BuzzerSpeed;
+static uint32 u32BuzzingPeriod;
+static uint16 u16BuzzCount=0;
 
 extern void BUZ_vidBuzzerOn(void){
 	if (u8BuzzerState!=BUZZER_ON){
 		u8BuzzerState = BUZZER_ON;
 		u32BuzzingPeriod = 0u;
 		u8BuzzerSpeed = BUZZER_ON_SLOW;
+	} else {
+		u16BuzzCount++;
 	}
 }
 
@@ -55,8 +58,11 @@ static void shutBuzzerOff(void){
 extern void BUZ_buzzerToneTaskCallback(void *pvParameters){ 
    
 	for(;;){
+		if( u8BuzzerState==BUZZER_OFF && u16BuzzCount > 0 ){
+			u16BuzzCount--;
+			BUZ_vidBuzzerOn();
+		}
 		if(u8BuzzerState==BUZZER_ON){
-    
 			switch(u8BuzzerSpeed){
 				case BUZZER_ON_SLOW :
 					do{					
