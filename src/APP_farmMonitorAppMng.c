@@ -62,28 +62,35 @@ extern void APP_vidFarmMonitorTaskCallback(void *pvParameters){
     xLastWakeTime = xTaskGetTickCount();
     static uint32 u32TempNokLevelTimeCount = 0;
     static uint32 u32TempNokLevelTimeCountReBuzz = 0;
+    static BOOL boolTempNokLevelSmsSentFlag = FALSE;
     static uint32 u32HumdNokLevelTimeCount = 0;
+    static uint32 u32HumdNokLevelTimeCountReBuzz = 0;
     static uint32 u32DustNokLevelTimeCount = 0;
     static uint32 u32LightNokLevelTimeCount = 0;
     for(;;){
         vTaskDelayUntil( &xLastWakeTime, xPeriod );
         //INFO(" App tsk ");
 
-        
-        
         uint8 u8NewDustLevelState = u8CheckDustLevel();
         uint8 u8NewLightLevelState = u8CheckLightLevel();
         //u8TempLevelState ||  u8HumLevelState || u8LightLevelState || u8DustLevelState == LEVEL_NOK
 
-/*===============================================================================================*/
-/*====================================== TMP MONITOR ============================================*/
-/*===============================================================================================*/        
+        /*===============================================================================================*/
+        /*====================================== TMP MONITOR ============================================*/
+        /*===============================================================================================*/        
         uint8 u8NewTempLevelState = u8CheckTempLevel();
-        if (u8TempLevelState == LEVEL_OK && u8NewTempLevelState == LEVEL_NOK){
-            u8TempLevelState = LEVEL_NOK;
-            BUZ_vidBuzzerOn();
-            //TODO:TEMP LED RED
-        } 
+        if (u8TempLevelState == LEVEL_NOK && u8NewTempLevelState == LEVEL_NOK){
+            u32TempNokLevelTimeCount += APP_MNG_TSK_PERIOD;
+            u32TempNokLevelTimeCountReBuzz += APP_MNG_TSK_PERIOD;
+            if( u32TempNokLevelTimeCount >= SMS_ALERT_TIME && boolTempNokLevelSmsSentFlag == FALSE){
+                //TODO::SEND SMS
+                //TODO::LOG TO EEP
+            }
+            if(u32TempNokLevelTimeCount >= BUZ_REALERT_TIME){
+                u32TempNokLevelTimeCountReBuzz = 0;
+                BUZ_vidBuzzerOn();
+            }
+        }
 
         if (u8TempLevelState == LEVEL_NOK && u8NewTempLevelState == LEVEL_OK){
             u8TempLevelState = LEVEL_OK;
@@ -96,22 +103,18 @@ extern void APP_vidFarmMonitorTaskCallback(void *pvParameters){
             u32TempNokLevelTimeCountReBuzz = 0;
         }
 
-        if (u8TempLevelState == LEVEL_NOK && u8NewTempLevelState == LEVEL_NOK){
-            u32TempNokLevelTimeCount += APP_MNG_TSK_PERIOD;
-            u32TempNokLevelTimeCountReBuzz += APP_MNG_TSK_PERIOD;
-            if( u32TempNokLevelTimeCount >= SMS_ALERT_TIME){
-                //TODO::SEND SMS
-                //TODO::LOG TO EEP
-            }
-            if(u32TempNokLevelTimeCount >= BUZ_REALERT_TIME){
-                u32TempNokLevelTimeCountReBuzz = 0;
-                BUZ_vidBuzzerOn();
-            }
+        if (u8TempLevelState == LEVEL_OK && u8NewTempLevelState == LEVEL_NOK){
+            u8TempLevelState = LEVEL_NOK;
+            BUZ_vidBuzzerOn();
+            //TODO:TEMP LED RED
+            //TODO::LOG TO EEP
         }
 
-/*===============================================================================================*/
-/*====================================== HUM MONITOR ============================================*/
-/*===============================================================================================*/
+
+
+        /*===============================================================================================*/
+        /*====================================== HUM MONITOR ============================================*/
+        /*===============================================================================================*/
         uint8 u8NewHumLevelState = u8CheckHumLevel();
         if (u8HumLevelState == LEVEL_OK){
             u8NewHumLevelState  = u8CheckHumLevel();
