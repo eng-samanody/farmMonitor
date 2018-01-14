@@ -58,6 +58,9 @@ static void shutBuzzerOff(void){
 extern void BUZ_buzzerToneTaskCallback(void *pvParameters){ 
    
 	for(;;){
+
+		INFO("BUZ TSK ");
+
 		if( u8BuzzerState==BUZZER_OFF && u16BuzzCount > 0 ){
 			u16BuzzCount--;
 			BUZ_vidBuzzerOn();

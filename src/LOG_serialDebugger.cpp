@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <Arduino.h>
+#include "NeoHWSerial.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +11,8 @@ extern "C" {
     BOOL bolSerialInitialized = FALSE;
 
     static void vidDebugInit(void){
-        Serial.begin(SERIAL_DEBUGGER_BAUD_RATE__);
+        NeoSerial.begin(SERIAL_DEBUGGER_BAUD_RATE__);
+        bolSerialInitialized = TRUE;
     }
 
     extern void LOG_vidPrint(char * format, ...){
@@ -18,11 +20,11 @@ extern "C" {
             vidDebugInit();
             bolSerialInitialized = TRUE;
         }
-        char debugMsg[100];
+        char debugMsg[DBG_BUF_MAX_SIZE];
         va_list ap;
         va_start(ap, format);
-        vsnprintf(debugMsg, 100, format, ap);
-        Serial.print(debugMsg);
+        vsnprintf(debugMsg, DBG_BUF_MAX_SIZE, format, ap);
+        NeoSerial.print(debugMsg);
         va_end(ap);
 
     }
@@ -32,11 +34,11 @@ extern "C" {
             vidDebugInit();
             bolSerialInitialized = TRUE;
         }
-        char debugMsg[100];
+        char debugMsg[DBG_BUF_MAX_SIZE];
         va_list ap;
         va_start(ap, format);
-        vsnprintf(debugMsg, 100, format, ap);
-        Serial.println(debugMsg);
+        vsnprintf(debugMsg, DBG_BUF_MAX_SIZE, format, ap);
+        NeoSerial.println(debugMsg);
         va_end(ap);  
     }
 #ifdef __cplusplus

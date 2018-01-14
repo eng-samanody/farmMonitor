@@ -4,6 +4,7 @@
 #include "TYPE_stdTypes.h"
 
 #define SERIAL_DEBUGGER_BAUD_RATE__ 9600u
+#define DBG_BUF_MAX_SIZE 100U
 
 #define INFO(...) LOG_vidPrintLn((char*)__VA_ARGS__)
 

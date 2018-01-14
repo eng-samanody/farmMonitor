@@ -24,6 +24,9 @@ extern void DUST_readDustSensorTaskCallback(void *pvParameters){
 
 
   for(;;){
+
+    INFO("DUS TSK");
+
     /* This task should execute every DUST_TSK_PERIOD milliseconds.  Time is measured in ticks.  
     The pdMS_TO_TICKS macro is used to convert milliseconds into ticks.  
     xLastWakeTime is automatically updated within vTaskDelayUntil() 
